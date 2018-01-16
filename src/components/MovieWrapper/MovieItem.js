@@ -5,31 +5,24 @@ import { Link } from "react-router-dom";
 
 const CompCard = styled.div`
 	background-color : #fff;
-	padding : 15px;
+	box-shadow: 0 0 41px #eee;
 `;
 
 const CompTitle = styled.h3`
-	padding : 10px 0px;
-	font-size: 1.5em;
-	min-height: 70px;
+	padding : 15px;
+	font-size: 0.95em;
+	margin:0;
+	min-height:80px;
 `;
 
 const CompImg = styled.div`
 	display:block;
+
+	img{
+		box-shadow: 0 0 15px #f2f2f2;
+	}
 `;
 
-
-const CompReleaseDate = styled.p`
-	padding : 10px 0px;
-	font-size: 0.9em;
-	color : #7F8FE9;
-`;
-
-const CompVote = styled.p`
-	padding : 10px 0px;
-	font-size: 0.9em;
-	color : #c2c2c2
-`;
 
 
 export default (props) => {
@@ -42,10 +35,8 @@ export default (props) => {
 				<CompImg>
 					<img src={img_base_url + mve.poster_path} />
 				</CompImg>
-				<CompTitle>{mve.title}</CompTitle>
+				<CompTitle>{mve.title.substring(0,30)}</CompTitle>
 				</Link>
-				<CompReleaseDate>Release Date: {mve.release_date}</CompReleaseDate>
-				<CompVote>Vote: {mve.vote_count}</CompVote>
 			</CompCard>
 			{(index+1) % 4 === 0 ? <div className="clearfix" /> : ""}
 		</Col>

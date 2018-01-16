@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from "styled-components";
 
-const LogoWrapper = styled.h3`
+const LogoWrapper = styled.a`
     display : "inline-block";
 `;
 
 export default () => {
   return (
-    <LogoWrapper>Movie App</LogoWrapper>
+    <LogoWrapper href="/" className="navbar-brand">Movie App</LogoWrapper>
   )
 }

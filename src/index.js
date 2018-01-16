@@ -13,20 +13,22 @@ const Routes = (
     <Router>
         <div>
             <Header />
+            <Container >
             <Route exact path="/" component={App} />
             <Switch>
                 <Route exact path="/discover" component={App} />
                 <Route exact path="/movie/:id" component={MovieDetail} />
             </Switch>
             <Route exact path="/about" component={About} />
+            </Container>
         </div>
     </Router>
 );
 
 ReactDOM.render(
-    <Container >
+    <div >
         { Routes }
-    </Container>, 
+    </div>, 
     document.getElementById('root')
 );
 registerServiceWorker();

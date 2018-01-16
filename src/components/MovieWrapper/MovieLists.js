@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import MovieItem from "./MovieItem";
-import { Row } from "react-bootstrap";
 import axios from "axios";
-import jsonp from "jsonp";
 import API_KEY from "../../API";
 
 export default class MovieLists extends Component {
@@ -14,7 +12,6 @@ export default class MovieLists extends Component {
 	}
 	componentWillMount() {
 		const api_key = API_KEY;
-		// 881ded17
 		const query = "13 hours";
 		const language = "en-US" ;
 		const sort_by = "popularity.desc";

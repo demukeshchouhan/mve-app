@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Glyphicon } from "react-bootstrap";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -11,32 +11,56 @@ const CompCard = styled.div`
 `;
 
 const CompTitle = styled.h3`
-	padding : 10px 0px;
-	font-size: 1.5em;
-	min-height: 70px;
+    font-size: 1.5em;
+    margin-top:5px;
 `;
 
 const CompImg = styled.div`
     display:block;
-    width:180px;
+    img{
+        box-shadow: 0 0 15px #f2f2f2;
+    }
 `;
 
 
 const CompReleaseDate = styled.p`
-	padding : 10px 0px;
 	font-size: 0.9em;
 	color : #7F8FE9;
 `;
 
 const CompVote = styled.p`
-	padding : 10px 0px;
 	font-size: 0.9em;
 	color : #c2c2c2
 `;
 
 
 const CompOverview = styled.p`
-    font-size:1.2em;
+    font-size: 0.9em;
+`;
+
+const CompGenreList = styled.li`
+    list-style: none;
+    font-size: 0.6em;
+    display: inline-block;
+    border-radius: 3px;
+    padding-right:10px;
+
+    .badge{
+        margin-top: -5px;
+        background: #7F8FE9;
+    }
+`;
+
+const GenreTitle = styled.span`
+    display:inline-block;
+    padding-right:5px;
+`;
+const SpokenLanguage = styled.li`
+    list-style:none;
+    display: inline-block;
+    padding-right:5px;
+    font-size: 0.9em;
+    color: #7F8FE9;
 `;
 
 export default class MovieDetail extends Component {
@@ -44,7 +68,8 @@ export default class MovieDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            singleMovie : {}
+            singleMovie : {},
+            genre : []
         }
         const api_key = API_KEY;
 		const id = Number(this.props.match.params.id);
@@ -52,35 +77,78 @@ export default class MovieDetail extends Component {
 		const sort_by = "popularity.desc";
         console.log(this.props);
 		
-		// http://www.omdbapi.com
 		axios(`http://api.themoviedb.org/3/movie/${id}?api_key=${api_key}`)
 			.then((response) => {
-				console.log(response.data);
 				this.setState({
 					singleMovie : response.data
 				});
-				console.log(this.state);
             });
+
             
+        }
         
-    }
-    
-    render() {
+        render() {
         const img_width = 300;
         const img_base_url = `https://image.tmdb.org/t/p/w${img_width}`;
-        const { title, overview, release_date, vote_count }  = this.state.singleMovie;
+        const { title, overview, release_date, vote_count, original_language, genres, spoken_languages }  
+        = this.state.singleMovie;
+        let genreList, spokenLanguages = null;
+        if(genres) {
+        genreList = genres.map((genre, index) => { 
+            return(
+                <CompGenreList key={index}>
+                <span className="badge">{genre.name}</span>
+                </CompGenreList>
+            )
+        });
+        }
+        if(spoken_languages) {
+        spokenLanguages = spoken_languages.map((lang, index) => { 
+            return(
+                <SpokenLanguage key={index}>
+                {lang.name}
+                </SpokenLanguage>
+            )
+        });
+        }
+
+        console.log(genres);
         return (
-            <Col sm={12}>
-                <CompCard>
-				<CompImg>
-					<img src={img_base_url + this.state.singleMovie.poster_path} />
-				</CompImg>
-				<CompTitle>{title}</CompTitle>
-				<CompReleaseDate>Release Date: {release_date}</CompReleaseDate>
-                <CompOverview>{overview}</CompOverview>
-				<CompVote>Vote: {vote_count}</CompVote>
-			    </CompCard>
-            </Col>
+            <div>
+                <Row>
+                <Col sm={3}>
+                    <CompImg>
+                        <img src={img_base_url + this.state.singleMovie.poster_path} />
+                    </CompImg>
+                </Col>
+
+                <Col sm={9}>
+                    <CompCard>
+                        <CompTitle>{title}</CompTitle>
+                        <CompOverview>{overview}</CompOverview>
+                        <CompReleaseDate>Release Date: {release_date}</CompReleaseDate>
+                        <CompVote>
+                            <Glyphicon glyph="glyphicon glyphicon-thumbs-up" style={{"top":"3px"}} /> Vote: {vote_count}
+                        </CompVote>
+                        <p>{original_language}</p>
+                        <ul> 
+                            
+                            <Glyphicon glyph="glyphicon glyphicon-volume-up" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
+                            Spoken Languages: {spokenLanguages}
+                        </ul>
+                        <ul> 
+                        <GenreTitle>
+                        <Glyphicon glyph="glyphicon glyphicon-tags" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
+                        Genre: </GenreTitle>{genreList}
+                        </ul>
+                    </CompCard>
+                </Col>
+            </Row>
+
+            <Row>
+
+            </Row>
+            </div>
           )
     }
   
