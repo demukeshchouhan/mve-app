@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const CompCard = styled.div`
 	background-color : #fff;
-	box-shadow: 0 0 41px #eee;
+	box-shadow: 0 10px 41px #eee;
 `;
 
 const CompTitle = styled.h3`
@@ -17,12 +17,7 @@ const CompTitle = styled.h3`
 
 const CompImg = styled.div`
 	display:block;
-
-	img{
-		box-shadow: 0 0 15px #f2f2f2;
-	}
 `;
-
 
 
 export default (props) => {
@@ -33,7 +28,7 @@ export default (props) => {
 			<CompCard>
 				<Link to={`movie/${mve.id}`}>
 				<CompImg>
-					<img src={img_base_url + mve.poster_path} />
+					<img src={img_base_url + mve.poster_path} alt={mve.title}/>
 				</CompImg>
 				<CompTitle>{mve.title.substring(0,30)}</CompTitle>
 				</Link>
@@ -43,7 +38,7 @@ export default (props) => {
 			
 	));
 	return (
-		<Row>
+		<Row style={{"marginTop" : "25px"}}>
 			{mveList}
 		</Row>
 	)

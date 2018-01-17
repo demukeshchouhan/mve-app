@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Row, Col, Glyphicon } from "react-bootstrap";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import API_KEY from "../../API";
+import poster_img from "../../static/img/poster.png";
 
 const CompCard = styled.div`
 	background-color : #fff;
-	padding : 15px;
+	padding : 30px;
 `;
 
 const CompTitle = styled.h3`
@@ -18,7 +18,8 @@ const CompTitle = styled.h3`
 const CompImg = styled.div`
     display:block;
     img{
-        box-shadow: 0 0 15px #f2f2f2;
+        border: 6px solid #fff;
+        box-shadow: 0 5px 15px #6e6767;
     }
 `;
 
@@ -62,6 +63,11 @@ const SpokenLanguage = styled.li`
     font-size: 0.9em;
     color: #7F8FE9;
 `;
+const BackgroundWrapper = styled.div`
+    background-size: cover;
+    background-position: center 25%;
+    min-height: 500px;
+`;
 
 export default class MovieDetail extends Component {
     
@@ -73,9 +79,6 @@ export default class MovieDetail extends Component {
         }
         const api_key = API_KEY;
 		const id = Number(this.props.match.params.id);
-		const language = "en-US" ;
-		const sort_by = "popularity.desc";
-        console.log(this.props);
 		
 		axios(`http://api.themoviedb.org/3/movie/${id}?api_key=${api_key}`)
 			.then((response) => {
@@ -88,9 +91,9 @@ export default class MovieDetail extends Component {
         }
         
         render() {
-        const img_width = 300;
+        const img_width = 1280;
         const img_base_url = `https://image.tmdb.org/t/p/w${img_width}`;
-        const { title, overview, release_date, vote_count, original_language, genres, spoken_languages }  
+        const { title, overview, release_date, vote_count, original_language, genres, spoken_languages, backdrop_path, poster_path }  
         = this.state.singleMovie;
         let genreList, spokenLanguages = null;
         if(genres) {
@@ -112,20 +115,25 @@ export default class MovieDetail extends Component {
         });
         }
 
-        console.log(genres);
+        const backgroundPoster = {
+            "backgroundImage" : `url(${img_base_url}${backdrop_path})`
+        }
         return (
-            <div>
+            <div >
+                <BackgroundWrapper style={backgroundPoster}>
+                <div className="container" style={{"position":"relative"}}>
+                <div style={{"top":"200px", "position" : "absolute", "padding": "15px", "background": "rgba(255,255,255,0.3)"}}>
+
                 <Row>
                 <Col sm={3}>
                     <CompImg>
-                        <img src={img_base_url + this.state.singleMovie.poster_path} />
+                        <img src={poster_path ? img_base_url + poster_path : poster_img} alt={title}/>
                     </CompImg>
                 </Col>
 
                 <Col sm={9}>
                     <CompCard>
                         <CompTitle>{title}</CompTitle>
-                        <CompOverview>{overview}</CompOverview>
                         <CompReleaseDate>Release Date: {release_date}</CompReleaseDate>
                         <CompVote>
                             <Glyphicon glyph="glyphicon glyphicon-thumbs-up" style={{"top":"3px"}} /> Vote: {vote_count}
@@ -141,13 +149,18 @@ export default class MovieDetail extends Component {
                         <Glyphicon glyph="glyphicon glyphicon-tags" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
                         Genre: </GenreTitle>{genreList}
                         </ul>
+                        <hr />
+                        <CompOverview>{overview}</CompOverview>
                     </CompCard>
                 </Col>
             </Row>
+                </div>
 
             <Row>
 
             </Row>
+                </div>
+            </BackgroundWrapper>
             </div>
           )
     }
