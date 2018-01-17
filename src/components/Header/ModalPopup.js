@@ -9,10 +9,13 @@ export default class ModalPopup extends Component {
 		};
 		console.log(this.state, this.props);
 	}
-	componentWillReceiveProps(newProp){
-		this.setState({ 
-			showModal: newProp.visible
-		});
+	componentWillReceiveProps(nextProps){
+		if (nextProps.visible != this.props.visible) {
+			this.setState({ 
+				showModal: nextProps.visible
+			});
+		  }
+		
 	}
 	handleClose() {
 		this.setState({ 
