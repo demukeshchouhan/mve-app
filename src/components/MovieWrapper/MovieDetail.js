@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Glyphicon } from "react-bootstrap";
+import { Row, Col, Glyphicon, ProgressBar } from "react-bootstrap";
 import styled from "styled-components";
 import axios from "axios";
 import API_KEY from "../../API";
 import poster_img from "../../static/img/poster.png";
+import { withRouter } from 'react-router-dom';
 
 const CompCard = styled.div`
 	background-color : #fff;
@@ -69,28 +70,45 @@ const BackgroundWrapper = styled.div`
     min-height: 500px;
 `;
 
-export default class MovieDetail extends Component {
+class MovieDetail extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
-            singleMovie : {},
-            genre : []
+            singleMovie : [],
+            genre : [],
+            fetching : true,
+            progress : 0
         }
-        const api_key = API_KEY;
-		const id = Number(this.props.match.params.id);
-		
-		axios(`http://api.themoviedb.org/3/movie/${id}?api_key=${api_key}`)
-			.then((response) => {
-				this.setState({
-					singleMovie : response.data
-				});
-            });
-
-            
-        }
+        this.fetchData(Number(this.props.match.params.id));
         
-        render() {
+    }
+
+
+    fetchData(id) {
+        const api_key = API_KEY;
+		axios({
+            method : "GET",
+            url : `http://api.themoviedb.org/3/movie/${id}?api_key=${api_key}`
+        })
+        .then((response) => {
+            this.setState({
+                singleMovie : response.data,
+                progress: 100,
+                fetching : false
+            });
+        });       
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(newProps.match.params.id !== this.props.match.params.id) {
+            this.fetchData(newProps.match.params.id);
+        }
+
+    }
+
+        
+    render() {
         const img_width = 1280;
         const img_base_url = `https://image.tmdb.org/t/p/w${img_width}`;
         const { title, overview, release_date, vote_count, original_language, genres, spoken_languages, backdrop_path, poster_path }  
@@ -118,52 +136,56 @@ export default class MovieDetail extends Component {
         const backgroundPoster = {
             "backgroundImage" : `url(${img_base_url}${backdrop_path})`
         }
-        return (
-            <div >
-                <BackgroundWrapper style={backgroundPoster}>
-                <div className="container" style={{"position":"relative"}}>
-                <div style={{"top":"200px", "position" : "absolute", "padding": "15px", "background": "rgba(255,255,255,0.3)"}}>
 
-                <Row>
-                <Col sm={3}>
-                    <CompImg>
-                        <img src={poster_path ? img_base_url + poster_path : poster_img} alt={title}/>
-                    </CompImg>
-                </Col>
-
-                <Col sm={9}>
-                    <CompCard>
-                        <CompTitle>{title}</CompTitle>
-                        <CompReleaseDate>Release Date: {release_date}</CompReleaseDate>
-                        <CompVote>
-                            <Glyphicon glyph="glyphicon glyphicon-thumbs-up" style={{"top":"3px"}} /> Vote: {vote_count}
-                        </CompVote>
-                        <p>{original_language}</p>
-                        <ul> 
-                            
-                            <Glyphicon glyph="glyphicon glyphicon-volume-up" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
-                            Spoken Languages: {spokenLanguages}
-                        </ul>
-                        <ul> 
-                        <GenreTitle>
-                        <Glyphicon glyph="glyphicon glyphicon-tags" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
-                        Genre: </GenreTitle>{genreList}
-                        </ul>
-                        <hr />
-                        <CompOverview>{overview}</CompOverview>
-                    </CompCard>
-                </Col>
-            </Row>
-                </div>
+        return(
+            <div>
+            {this.state.fetching ? <ProgressBar active  striped bsStyle="danger" now={this.state.progress} style={{"height": "5px"}}/> : ""}
+            <BackgroundWrapper style={backgroundPoster}>
+            <div className="container" style={{"position":"relative"}}>
+            <div style={{"top":"200px", "position" : "absolute", "padding": "15px", "background": "rgba(255,255,255,0.3)"}}>
 
             <Row>
+            <Col sm={3}>
+                <CompImg>
+                    <img src={poster_path ? img_base_url + poster_path : poster_img} alt={title}/>
+                </CompImg>
+            </Col>
 
-            </Row>
-                </div>
-            </BackgroundWrapper>
+            <Col sm={9}>
+                <CompCard>
+                    <CompTitle>{title}</CompTitle>
+                    <CompReleaseDate>Release Date: {release_date}</CompReleaseDate>
+                    <CompVote>
+                        <Glyphicon glyph="glyphicon glyphicon-thumbs-up" style={{"top":"3px"}} /> Vote: {vote_count}
+                    </CompVote>
+                    <p>{original_language}</p>
+                    <ul> 
+                        
+                        <Glyphicon glyph="glyphicon glyphicon-volume-up" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
+                        Spoken Languages: {spokenLanguages}
+                    </ul>
+                    <ul> 
+                    <GenreTitle>
+                    <Glyphicon glyph="glyphicon glyphicon-tags" style={{"top":"3px", "paddingRight": "10px", "color": "#7F8FE9"}} />
+                    Genre: </GenreTitle>{genreList}
+                    </ul>
+                    <hr />
+                    <CompOverview>{overview}</CompOverview>
+                </CompCard>
+            </Col>
+        </Row>
             </div>
-          )
+
+        <Row>
+
+        </Row>
+            </div>
+        </BackgroundWrapper>
+        </div>
+        )
+        
     }
   
 }
 
+export default withRouter(MovieDetail);

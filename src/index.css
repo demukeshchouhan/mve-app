@@ -81,3 +81,21 @@ h1,h2,h3,h4,h5,h6{
 .glyphicon-search{
   color: #fff !important;
 }
+
+.progress{
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+
+.navbar-nav li {
+    float: left;
+}
+
+.nav li {
+    position: relative;
+    display: block;
+}

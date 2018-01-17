@@ -6,20 +6,19 @@ import App from './App';
 import About from "./components/About/About";
 import MovieDetail from "./components/MovieWrapper/MovieDetail";
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const Routes = (
     <Router>
         <div>
             <Header />
-            <div className="container" >
+            <Switch>
             <Route exact path="/" component={App} />
             <Route exact path="/discover" component={App} />
             <Route exact path="/about" component={About} />
-            </div>
             <Route exact path="/movie/:id" component={MovieDetail} />
-            
-            
+            <Route component={App}/>
+            </Switch>
         </div>
     </Router>
 );

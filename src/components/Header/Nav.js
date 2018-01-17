@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon } from "react-bootstrap";
+import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Logo from "./Logo";
 import ModalPopup from "./ModalPopup";
+import { withRouter } from 'react-router-dom';
 
-export default class NavigationBar extends Component {
+class NavigationBar extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { showModal: false };
+		this.state = { 
+			showModal: false 
+		};
 
 	}
-	handleModalPopup(e){
-		e.preventDefault();
-		this.setState({ showModal: true });
-		console.log("popup")
-	}
+
+
 	render(){
 		return (
 			<Navbar>
@@ -37,15 +37,12 @@ export default class NavigationBar extends Component {
 					</LinkContainer>
 				</Nav>
 
-				<Nav pullRight>
-				<NavItem onClick={(e) => this.handleModalPopup(e)}>
-						<Glyphicon glyph="glyphicon glyphicon-search" style={{"paddingRight":"15px"}}/>
-							Search
-				</NavItem>
-				{this.state.showModal ? <ModalPopup visible={this.state.showModal}/> : null}
-				</Nav>		
+				<ModalPopup />	
 				</Navbar.Collapse>
 			</Navbar>
 		)
 	}
 }
+
+
+export default withRouter(NavigationBar);
