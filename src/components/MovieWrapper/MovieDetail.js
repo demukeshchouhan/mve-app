@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Row, Col, Glyphicon, ProgressBar } from "react-bootstrap";
+import { Row, Col, Glyphicon, Image } from "react-bootstrap";
 import styled from "styled-components";
 import axios from "axios";
 import API_KEY from "../../API";
 import poster_img from "../../static/img/poster.png";
+import fetchingImage from "../../static/img/loading.gif";
 import { withRouter } from 'react-router-dom';
+
 
 const CompCard = styled.div`
 	background-color : #fff;
@@ -70,6 +72,23 @@ const BackgroundWrapper = styled.div`
     min-height: 500px;
 `;
 
+const LoadingBar = styled.div`
+    text-align:center;
+    width : 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.99);
+    position: absolute;
+    top:0;
+    left:0;
+    z-index: 9999999;
+    h1{
+        top: 50%;
+        font-size:1em;
+        color: #7F8FE9;
+        position: relative;
+    }
+`;
+
 class MovieDetail extends Component {
     
     constructor(props) {
@@ -77,8 +96,7 @@ class MovieDetail extends Component {
         this.state = {
             singleMovie : [],
             genre : [],
-            fetching : true,
-            progress : 0
+            isLoading : true
         }
         this.fetchData(Number(this.props.match.params.id));
         
@@ -95,7 +113,7 @@ class MovieDetail extends Component {
             this.setState({
                 singleMovie : response.data,
                 progress: 100,
-                fetching : false
+                isLoading : false
             });
         });       
     }
@@ -113,6 +131,7 @@ class MovieDetail extends Component {
         const img_base_url = `https://image.tmdb.org/t/p/w${img_width}`;
         const { title, overview, release_date, vote_count, original_language, genres, spoken_languages, backdrop_path, poster_path }  
         = this.state.singleMovie;
+        console.log(backdrop_path);
         let genreList, spokenLanguages = null;
         if(genres) {
         genreList = genres.map((genre, index) => { 
@@ -133,13 +152,27 @@ class MovieDetail extends Component {
         });
         }
 
-        const backgroundPoster = {
-            "backgroundImage" : `url(${img_base_url}${backdrop_path})`
+        
+        var backgroundPoster = null;
+        if(backdrop_path){
+            backgroundPoster = {
+                "backgroundImage" : `url(${img_base_url}${backdrop_path})`
+            }     
+        }else{
+            backgroundPoster = {
+                "backgroundImage" : `url(${fetchingImage})`,
+                "background-size": "contain",
+                "background-position": "center center",
+                "min-height": "183px",
+                "background-repeat": "no-repeat"
+            }
         }
 
-        return(
-            <div>
-            {this.state.fetching ? <ProgressBar active  striped bsStyle="danger" now={this.state.progress} style={{"height": "5px"}}/> : ""}
+        if(this.state.isLoading) {
+            return <LoadingBar><h1><Image src={`${fetchingImage}`}  style={{"width": "50px", "display":"inline-block"}}/>Loading... </h1></LoadingBar>
+        }else{
+            return(
+           <div>
             <BackgroundWrapper style={backgroundPoster}>
             <div className="container" style={{"position":"relative"}}>
             <div style={{"top":"200px", "position" : "absolute", "padding": "15px", "background": "rgba(255,255,255,0.3)"}}>
@@ -183,6 +216,8 @@ class MovieDetail extends Component {
         </BackgroundWrapper>
         </div>
         )
+
+    }
         
     }
   
