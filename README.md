@@ -1,4 +1,4 @@
-# Mve-App
+# Movie App
 
 ## screenshot
 ![](https://raw.githubusercontent.com/demukeshchouhan/mve-app/master/demo.jpg)
