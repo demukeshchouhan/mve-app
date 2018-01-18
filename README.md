@@ -10,3 +10,10 @@
 * styled-components
 * axios
 * themoviedb-API
+
+> create API.js file in src root and add following code
+
+```javascript
+    const API_KEY = "your api key";
+    export default API_KEY;
+```
