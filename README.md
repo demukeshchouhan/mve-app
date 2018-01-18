@@ -11,7 +11,7 @@
 * axios
 * themoviedb-API
 
-> create API.js file in src root and add following code
+> create API.js file in src root and add following code * you can get API key from themoviedb.org *
 
 ```javascript
     const API_KEY = "your api key";
